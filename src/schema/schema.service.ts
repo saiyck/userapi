@@ -17,7 +17,7 @@ export class SchemaService {
     const {schemaName,fields} = createSchemaDto;
     try {
      let result = createUserSchema(fields);
-     const blogSchema = new Schema(result.schema,{timestamps:true});
+     const blogSchema = new Schema(result.schema);
      const blogModal = this.connection.model(schemaName,blogSchema);
      const doc = new blogModal(result.data);
       await doc.save();

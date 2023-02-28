@@ -76,8 +76,11 @@ let SchemaService = class SchemaService {
     }
     ;
     async createData(createSchemaDto, res) {
+        console.log('createSchemaDto.data', createSchemaDto.data);
+        let data = Object.assign(Object.assign({}, createSchemaDto.data), { createdAt: new Date(), updatedAt: new Date() });
+        console.log('data', data);
         try {
-            let result = await this.connection.db.collection(createSchemaDto.name).insertOne(createSchemaDto.data);
+            let result = await this.connection.db.collection(createSchemaDto.name).insertOne(data);
             res.send({
                 status: 201,
                 message: "data create successfully"

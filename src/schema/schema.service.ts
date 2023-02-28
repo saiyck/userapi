@@ -17,7 +17,7 @@ export class SchemaService {
     const {schemaName,fields} = createSchemaDto;
     try {
      let result = createUserSchema(fields);
-     const blogSchema = new Schema(result.schema);
+     const blogSchema = new Schema(result.schema,{timestamps : true});
      const blogModal = this.connection.model(schemaName,blogSchema);
      const doc = new blogModal(result.data);
       await doc.save();
@@ -71,8 +71,11 @@ export class SchemaService {
 
 
   async createData(createSchemaDto,res){
+    console.log('createSchemaDto.data',createSchemaDto.data)
+    let data = {...createSchemaDto.data,createdAt : new Date(), updatedAt : new Date()}
+    console.log('data',data);
   try {
-  let result= await this.connection.db.collection(createSchemaDto.name).insertOne(createSchemaDto.data);
+  let result= await this.connection.db.collection(createSchemaDto.name).insertOne(data);
    // let result= await this.connection.db.collection(createSchemaDto.name).findOne();
        res.send({
         status: 201,

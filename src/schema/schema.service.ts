@@ -108,8 +108,11 @@ export class SchemaService {
    let result= await this.connection.db.collection(schema).updateMany({},{$rename: updateSchemaDto}) 
    let data= await this.connection.db.collection(schema).findOne();
    const types = data.types;
+   const schemad = data.schema;
     let final= updateTypes(types,updateSchemaDto);
-     await this.connection.db.collection(schema).updateOne({_id: data._id},{$set:{types: final}})
+    let finalSchema = updateTypes(schemad,updateSchemaDto);
+    console.log('final schema',finalSchema);
+     await this.connection.db.collection(schema).updateOne({_id: data._id},{$set:{types: final, schema: finalSchema}})
     return {
       status:201,
       message : 'schema has been updated'

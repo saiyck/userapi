@@ -43,8 +43,9 @@ export class SchemaController {
     return this.schemaService.findOne(id);
   }
 
-  @Patch(':schema')
-  update(@Param('schema') schema: string, @Body() updateSchemaDto: UpdateSchemaDto) {
+  @Patch('update/data')
+  update(@Query('schema') schema: string, @Body() updateSchemaDto: UpdateSchemaDto) {
+    console.log('calling update')
     return this.schemaService.update(schema, updateSchemaDto);
   }
 

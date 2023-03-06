@@ -43,6 +43,7 @@ let SchemaController = class SchemaController {
         return this.schemaService.findOne(id);
     }
     update(schema, updateSchemaDto) {
+        console.log('calling update');
         return this.schemaService.update(schema, updateSchemaDto);
     }
     remove(schema) {
@@ -96,8 +97,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SchemaController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':schema'),
-    __param(0, (0, common_1.Param)('schema')),
+    (0, common_1.Patch)('update/data'),
+    __param(0, (0, common_1.Query)('schema')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_schema_dto_1.UpdateSchemaDto]),

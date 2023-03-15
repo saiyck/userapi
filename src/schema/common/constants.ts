@@ -89,11 +89,21 @@ export function updateTypes(types,data:Object){
   return types;
 }
 
+export function deleteTypesSchemas(values,data:any){
+   let keys = Object.keys(data);
+   for(let i=0; i<keys.length; i++){
+      delete values[keys[i]]
+   }
+   return values;
+}
+
 export const filterSchemaTypes = async (data:any) => {
     // let temp [...data];
-    let temp = [...data];
-    delete temp[0].schema
-    delete temp[0].types
-    console.log('temp',temp)
-    return temp;
+    // let temp = [...data];
+    let firstObj = data[0]
+   delete firstObj['types']
+    // delete data[0].schema
+    // delete data[0]['types']
+    console.log('temp',firstObj)
+    return data;
 }

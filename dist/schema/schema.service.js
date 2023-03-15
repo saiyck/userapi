@@ -23,25 +23,34 @@ let SchemaService = class SchemaService {
         this.connection = connection;
     }
     async create(createSchemaDto, res) {
-        console.log('create', createSchemaDto);
         const { schemaName, fields } = createSchemaDto;
-        try {
-            let result = (0, constants_1.createUserSchema)(fields);
-            const blogSchema = new mongoose_3.Schema(result.schema, { timestamps: true });
-            const blogModal = this.connection.model(schemaName, blogSchema);
-            const doc = new blogModal(result.data);
-            await doc.save();
-            res.send({
-                status: 201,
-                message: "schema create successfully",
-                result
-            });
+        let data = await this.connection.db.collection(schemaName).findOne();
+        console.log('datataa', data);
+        if (!data) {
+            try {
+                let result = (0, constants_1.createUserSchema)(fields);
+                const blogSchema = new mongoose_3.Schema(result.schema, { timestamps: true });
+                const blogModal = this.connection.model(schemaName, blogSchema);
+                const doc = new blogModal(result.data);
+                await doc.save();
+                res.send({
+                    status: 201,
+                    message: "schema create successfully",
+                    result
+                });
+            }
+            catch (error) {
+                console.log('error', error);
+                res.send({
+                    status: 400,
+                    message: error
+                });
+            }
         }
-        catch (error) {
-            console.log('error', error);
+        else {
             res.send({
                 status: 400,
-                message: error
+                message: "Schema Already exists"
             });
         }
     }
@@ -119,17 +128,32 @@ let SchemaService = class SchemaService {
             message: 'schema has been updated'
         };
     }
+    async deleteSchemaFields(schema, deleteSchema) {
+        console.log('schema', schema, 'data', deleteSchema);
+        let result = await this.connection.db.collection(schema).updateMany({}, { $unset: deleteSchema });
+        let data = await this.connection.db.collection(schema).findOne();
+        const types = data.types;
+        const schemad = data.schema;
+        let final = (0, constants_1.deleteTypesSchemas)(types, deleteSchema);
+        let finalSchema = (0, constants_1.deleteTypesSchemas)(schemad, deleteSchema);
+        console.log('final schema', final);
+        await this.connection.db.collection(schema).updateOne({ _id: data._id }, { $set: { types: final, schema: finalSchema } });
+        return {
+            status: 201,
+            message: 'schema has been updated'
+        };
+    }
     async findAllData(name) {
         let response = [];
         let result = await this.connection.db.collection(name).findOne();
         if (result) {
             try {
                 let datss = await this.connection.model(name);
-                response = await datss.find();
+                response = await datss.find({}, { createdAt: 0, updatedAt: 0, __v: 0 });
             }
             catch (error) {
                 let datss = await this.connection.model(name, result.schema);
-                response = await datss.find();
+                response = await datss.find({}, { createdAt: 0, updatedAt: 0, __v: 0 });
             }
         }
         let res = {
@@ -158,13 +182,63 @@ let SchemaService = class SchemaService {
     async getAllCollectionFields(res) {
         let response = [];
         let allList = await this.findAll();
-        allList.map(async (val, ind) => {
-            const data = await this.findAllData(val.name);
+        if (allList.length === 0) {
+            res.send([]);
+        }
+        for (let i = 0; i < allList.length; i++) {
+            const data = await this.findAllData(allList[i].name);
             response.push(data);
             if (response.length == allList.length) {
                 res.send(response);
             }
-        });
+        }
+    }
+    async deleteDocument(id, schema) {
+        let response;
+        let result = await this.connection.db.collection(schema).findOne();
+        try {
+            let datss = await this.connection.model(schema);
+            response = await datss.deleteOne({ _id: id });
+        }
+        catch (error) {
+            let datss = await this.connection.model(schema, result.schema);
+            response = await datss.deleteOne({ _id: id });
+        }
+        console.log('ress', response);
+        return {
+            status: 204,
+            message: "delete success fully"
+        };
+    }
+    async updateCollectionData(id, schema, data) {
+        let response;
+        let result = await this.connection.db.collection(schema).findOne();
+        try {
+            let datss = await this.connection.model(schema);
+            response = await datss.updateOne({ _id: id }, { $set: data });
+        }
+        catch (error) {
+            let datss = await this.connection.model(schema, result.schema);
+            response = await datss.updateOne({ _id: id }, { $set: data });
+        }
+        if (response.acknowledged && response.matchedCount > 0) {
+            return {
+                status: 204,
+                message: "collection data updated"
+            };
+        }
+        else if (response.matchedCount == 0) {
+            return {
+                status: 400,
+                message: "no data found with respect ID"
+            };
+        }
+        else {
+            return {
+                status: 400,
+                message: "Bad Request"
+            };
+        }
     }
 };
 SchemaService = __decorate([

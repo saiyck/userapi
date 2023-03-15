@@ -1,9 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTypeSchema = exports.createScheme = exports.dto = exports.CreateSchemaDto = void 0;
+exports.getTypeSchema = exports.createScheme = exports.dto = exports.DeleteSchemaDto = exports.CreateSchemaDto = void 0;
 class CreateSchemaDto {
 }
 exports.CreateSchemaDto = CreateSchemaDto;
+class DeleteSchemaDto {
+}
+exports.DeleteSchemaDto = DeleteSchemaDto;
 class dto {
 }
 exports.dto = dto;

@@ -1,5 +1,7 @@
 export declare class CreateSchemaDto {
 }
+export declare class DeleteSchemaDto {
+}
 export declare class dto {
     name: String;
     age: String;

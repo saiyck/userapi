@@ -16,4 +16,5 @@ export declare function createUserSchema(fields: any): {
     data: {};
 };
 export declare function updateTypes(types: any, data: Object): any;
-export declare const filterSchemaTypes: (data: any) => Promise<any[]>;
+export declare function deleteTypesSchemas(values: any, data: any): any;
+export declare const filterSchemaTypes: (data: any) => Promise<any>;

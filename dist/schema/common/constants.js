@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filterSchemaTypes = exports.updateTypes = exports.createUserSchema = exports.convertFieldsData = exports.getSchema = exports.ConvertColumTypesToSchema = exports.convertDATAtOsCHEMA = exports.SchemaObject = exports.SchemaType = void 0;
+exports.filterSchemaTypes = exports.deleteTypesSchemas = exports.updateTypes = exports.createUserSchema = exports.convertFieldsData = exports.getSchema = exports.ConvertColumTypesToSchema = exports.convertDATAtOsCHEMA = exports.SchemaObject = exports.SchemaType = void 0;
 exports.SchemaType = 'SchemaType';
 exports.SchemaObject = {
     "number": "Integer",
@@ -80,12 +80,19 @@ function updateTypes(types, data) {
     return types;
 }
 exports.updateTypes = updateTypes;
+function deleteTypesSchemas(values, data) {
+    let keys = Object.keys(data);
+    for (let i = 0; i < keys.length; i++) {
+        delete values[keys[i]];
+    }
+    return values;
+}
+exports.deleteTypesSchemas = deleteTypesSchemas;
 const filterSchemaTypes = async (data) => {
-    let temp = [...data];
-    delete temp[0].schema;
-    delete temp[0].types;
-    console.log('temp', temp);
-    return temp;
+    let firstObj = data[0];
+    delete firstObj['types'];
+    console.log('temp', firstObj);
+    return data;
 };
 exports.filterSchemaTypes = filterSchemaTypes;
 //# sourceMappingURL=constants.js.map

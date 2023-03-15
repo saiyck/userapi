@@ -1,4 +1,5 @@
 import { SchemaService } from './schema.service';
+import { DeleteSchemaDto } from './dto/create-schema.dto';
 import { UpdateSchemaDto } from './dto/update-schema.dto';
 import { Response } from 'express';
 export declare class SchemaController {
@@ -31,9 +32,21 @@ export declare class SchemaController {
         status: number;
         message: string;
     }>;
-    remove(schema: string): Promise<{
+    deleteSchemaFields(schema: string, deleteSvhemaDto: DeleteSchemaDto): Promise<{
         status: number;
         message: string;
     }>;
     getAllCollections(res: Response): void;
+    remove(schema: string): Promise<{
+        status: number;
+        message: string;
+    }>;
+    deleteDocument(id: string, schema: string): Promise<{
+        status: number;
+        message: string;
+    }>;
+    updateCollectionData(id: string, schema: string, updateSchema: any): Promise<{
+        status: number;
+        message: string;
+    }>;
 }

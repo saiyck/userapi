@@ -1,6 +1,9 @@
 export class CreateSchemaDto {
 }
 
+export class DeleteSchemaDto {
+}
+
 export class dto {
     name:String
     age: String

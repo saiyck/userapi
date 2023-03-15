@@ -4,7 +4,7 @@ import { Connection } from 'mongoose';
 import { CreateSchemaDto, createScheme, getTypeSchema } from './dto/create-schema.dto';
 import { UpdateSchemaDto } from './dto/update-schema.dto';
 import mongoose, {Schema} from 'mongoose'
-import { ConvertColumTypesToSchema, convertFieldsData, createUserSchema,  filterSchemaTypes, getSchema, SchemaType, updateTypes } from './common/constants';
+import { ConvertColumTypesToSchema, convertFieldsData, createUserSchema,  deleteTypesSchemas,  filterSchemaTypes, getSchema, SchemaType, updateTypes } from './common/constants';
 import { async } from 'rxjs';
 
 @Injectable()
@@ -13,8 +13,11 @@ export class SchemaService {
 
 // create schema
  async create(createSchemaDto,res) {
-  console.log('create',createSchemaDto)
+  // console.log('create',createSchemaDto)
     const {schemaName,fields} = createSchemaDto;
+    let data=await this.connection.db.collection(schemaName).findOne();
+    console.log('datataa',data)
+    if(!data){
     try {
      let result = createUserSchema(fields);
      const blogSchema = new Schema(result.schema,{timestamps : true});
@@ -33,6 +36,12 @@ export class SchemaService {
         message: error
       })
     }
+  }else{
+    res.send({
+      status: 400,
+      message: "Schema Already exists"
+    })
+  }
   }
 
  //get schema fields 
@@ -119,16 +128,32 @@ export class SchemaService {
     };
   }
 
+  async deleteSchemaFields(schema:string, deleteSchema) {
+    console.log('schema',schema,'data',deleteSchema);
+   let result= await this.connection.db.collection(schema).updateMany({},{$unset: deleteSchema}) 
+   let data= await this.connection.db.collection(schema).findOne();
+   const types = data.types;
+   const schemad = data.schema;
+    let final= deleteTypesSchemas(types,deleteSchema);
+    let finalSchema = deleteTypesSchemas(schemad,deleteSchema);
+    console.log('final schema',final);
+    await this.connection.db.collection(schema).updateOne({_id: data._id},{$set:{types: final, schema: finalSchema}})
+    return {
+      status:201,
+      message : 'schema has been updated'
+    };
+  }
+
   async findAllData(name: string) {
     let  response=[];
     let result =await this.connection.db.collection(name).findOne();
     if(result){
       try {
         let datss = await this.connection.model(name)
-        response = await datss.find();
+        response = await datss.find({},{createdAt:0,updatedAt:0,__v:0});
       } catch (error) {
         let datss = await this.connection.model(name,result.schema);
-        response = await datss.find();
+        response = await datss.find({},{createdAt:0,updatedAt:0,__v:0});
       }
     }
     // let data = await filterSchemaTypes(response);
@@ -160,13 +185,62 @@ export class SchemaService {
 async getAllCollectionFields(res){
    let response = []
    let allList = await this.findAll();
-  allList.map( async (val,ind)=> {
-      const data =await this.findAllData(val.name);
-      response.push(data)
-     if(response.length == allList.length){
-       res.send(response);
-     }
-   })
+   if(allList.length === 0){
+    res.send([]);
+   }
+   for(let i =0; i< allList.length; i++){
+    const data = await this.findAllData(allList[i].name);
+    response.push(data)
+    if(response.length == allList.length){
+      res.send(response);
+    }
+   }
+}
+
+async deleteDocument(id,schema){
+  let  response;
+  let result =await this.connection.db.collection(schema).findOne();
+  try {
+    let datss = await this.connection.model(schema)
+    response = await datss.deleteOne({_id: id});
+  } catch (error) {
+    let datss = await this.connection.model(schema,result.schema);
+    response = await datss.deleteOne({_id: id});
+  }
+  console.log('ress',response);
+  return {
+    status:204,
+    message:"delete success fully"
+  }
+}
+
+async updateCollectionData(id,schema,data){
+  let  response;
+  let result =await this.connection.db.collection(schema).findOne();
+  try {
+    let datss = await this.connection.model(schema)
+    response = await datss.updateOne({_id: id},{$set : data});
+  } catch (error) {
+    let datss = await this.connection.model(schema,result.schema);
+    response = await datss.updateOne({_id: id},{$set : data});
+  }
+ 
+  if(response.acknowledged && response.matchedCount > 0){
+    return {
+      status:204,
+      message:"collection data updated"
+    }
+  }else if(response.matchedCount == 0){
+    return {
+      status:400,
+      message:"no data found with respect ID"
+    }
+  }else{
+    return {
+      status:400,
+      message:"Bad Request"
+    }
+  }
 }
 
 

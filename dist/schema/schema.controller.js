@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SchemaController = void 0;
 const common_1 = require("@nestjs/common");
 const schema_service_1 = require("./schema.service");
+const create_schema_dto_1 = require("./dto/create-schema.dto");
 const update_schema_dto_1 = require("./dto/update-schema.dto");
 let SchemaController = class SchemaController {
     constructor(schemaService) {
@@ -46,11 +47,21 @@ let SchemaController = class SchemaController {
         console.log('calling update');
         return this.schemaService.update(schema, updateSchemaDto);
     }
-    remove(schema) {
-        return this.schemaService.remove(schema);
+    deleteSchemaFields(schema, deleteSvhemaDto) {
+        return this.schemaService.deleteSchemaFields(schema, deleteSvhemaDto);
     }
     getAllCollections(res) {
         this.schemaService.getAllCollectionFields(res);
+    }
+    remove(schema) {
+        return this.schemaService.remove(schema);
+    }
+    deleteDocument(id, schema) {
+        return this.schemaService.deleteDocument(id, schema);
+    }
+    updateCollectionData(id, schema, updateSchema) {
+        console.log('request', id, schema, updateSchema);
+        return this.schemaService.updateCollectionData(id, schema, updateSchema);
     }
 };
 __decorate([
@@ -105,12 +116,13 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SchemaController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)(':schema'),
-    __param(0, (0, common_1.Param)('schema')),
+    (0, common_1.Delete)('delete/fields'),
+    __param(0, (0, common_1.Query)('schema')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, create_schema_dto_1.DeleteSchemaDto]),
     __metadata("design:returntype", void 0)
-], SchemaController.prototype, "remove", null);
+], SchemaController.prototype, "deleteSchemaFields", null);
 __decorate([
     (0, common_1.Get)('getAllCollections/all'),
     __param(0, (0, common_1.Res)()),
@@ -118,6 +130,30 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], SchemaController.prototype, "getAllCollections", null);
+__decorate([
+    (0, common_1.Delete)(':schema'),
+    __param(0, (0, common_1.Param)('schema')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], SchemaController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Delete)('delete/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Query)('schema')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], SchemaController.prototype, "deleteDocument", null);
+__decorate([
+    (0, common_1.Patch)('update/data/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Query)('schema')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", void 0)
+], SchemaController.prototype, "updateCollectionData", null);
 SchemaController = __decorate([
     (0, common_1.Controller)('schema'),
     __metadata("design:paramtypes", [schema_service_1.SchemaService])

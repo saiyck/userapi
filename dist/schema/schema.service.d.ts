@@ -27,6 +27,10 @@ export declare class SchemaService {
         status: number;
         message: string;
     }>;
+    deleteSchemaFields(schema: string, deleteSchema: any): Promise<{
+        status: number;
+        message: string;
+    }>;
     findAllData(name: string): Promise<{
         schemaName: string;
         data: any[];
@@ -36,4 +40,12 @@ export declare class SchemaService {
         message: string;
     }>;
     getAllCollectionFields(res: any): Promise<void>;
+    deleteDocument(id: any, schema: any): Promise<{
+        status: number;
+        message: string;
+    }>;
+    updateCollectionData(id: any, schema: any, data: any): Promise<{
+        status: number;
+        message: string;
+    }>;
 }

@@ -20,7 +20,7 @@ export class SchemaService {
     if(!data){
     try {
      let result = createUserSchema(fields);
-     const blogSchema = new Schema(result.schema,{timestamps : true});
+     const blogSchema = new Schema(result.schema,{timestamps : true,strict: false});
      const blogModal = this.connection.model(schemaName,blogSchema);
      const doc = new blogModal(result.data);
       await doc.save();
@@ -219,12 +219,16 @@ async updateCollectionData(id,schema,data){
   let result =await this.connection.db.collection(schema).findOne();
   try {
     let datss = await this.connection.model(schema)
-    response = await datss.updateOne({_id: id},{$set : data});
+    console.log('datss',datss)
+    response = await datss.updateMany({_id: id},{$set : data});
+    console.log('resstry',response);
   } catch (error) {
     let datss = await this.connection.model(schema,result.schema);
-    response = await datss.updateOne({_id: id},{$set : data});
+    console.log('datss',datss)
+    response = await datss.updateMany({_id: id},{$set : data});
+    console.log('resscatch',response);
   }
- 
+  console.log('resss',response)
   if(response.acknowledged && response.matchedCount > 0){
     return {
       status:204,

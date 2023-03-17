@@ -10,7 +10,8 @@ async function bootstrap() {
       "http://localhost:3000",
       "https://mongodbweb.onrender.com",
       "https://mongodbweb-app.vercel.app"
-    ]
+    ],
+    credentials: true,
   });
   app.useGlobalInterceptors(new ResponseAddHeaders);
   await app.listen( process.env.PORT || 3001);

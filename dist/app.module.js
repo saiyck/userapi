@@ -13,11 +13,12 @@ const app_service_1 = require("./app.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const schema_module_1 = require("./schema/schema.module");
 const relation_module_1 = require("./relation/relation.module");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [mongoose_1.MongooseModule.forRoot('mongodb+srv://sai967621:959CelAhokejPnZj@cluster0.slchmpv.mongodb.net/nest?retryWrites=true&w=majority'), schema_module_1.SchemaModule, relation_module_1.RelationModule],
+        imports: [config_1.ConfigModule.forRoot(), mongoose_1.MongooseModule.forRoot(process.env.MONGO_DB_URL), schema_module_1.SchemaModule, relation_module_1.RelationModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

@@ -4,11 +4,11 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SchemaModule } from './schema/schema.module';
 import { RelationModule } from './relation/relation.module';
+import { ConfigModule } from '@nestjs/config';
 import mongoose from 'mongoose';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb+srv://vercel-admin-user:RFyg8Op5ougTB9eA@cluster0.slchmpv.mongodb.net/nest?retryWrites=true&w=majority'), SchemaModule, RelationModule],
-  // imports: [MongooseModule.forRoot('mongodb://localhost/nest'), SchemaModule, RelationModule],
+  imports: [ConfigModule.forRoot(),MongooseModule.forRoot(process.env.MONGO_DB_URL), SchemaModule, RelationModule],
   controllers: [AppController],
   providers: [AppService],
 })

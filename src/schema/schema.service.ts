@@ -20,6 +20,7 @@ export class SchemaService {
     if(!data){
     try {
      let result = createUserSchema(fields);
+     console.log('result',result)
      const blogSchema = new Schema(result.schema,{timestamps : true,strict: false});
      const blogModal = this.connection.model(schemaName,blogSchema);
      const doc = new blogModal(result.data);

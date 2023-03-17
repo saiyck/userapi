@@ -29,6 +29,7 @@ let SchemaService = class SchemaService {
         if (!data) {
             try {
                 let result = (0, constants_1.createUserSchema)(fields);
+                console.log('result', result);
                 const blogSchema = new mongoose_3.Schema(result.schema, { timestamps: true, strict: false });
                 const blogModal = this.connection.model(schemaName, blogSchema);
                 const doc = new blogModal(result.data);

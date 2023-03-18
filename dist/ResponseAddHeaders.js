@@ -11,9 +11,8 @@ const common_1 = require("@nestjs/common");
 let ResponseAddHeaders = class ResponseAddHeaders {
     intercept(context, next) {
         const ResponseObj = context.switchToHttp().getResponse();
-        ResponseObj.setHeader('Access-Control-Allow-Origin', '*');
+        ResponseObj.setHeader('Access-Control-Allow-Origin', "*");
         ResponseObj.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
-        ResponseObj.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
         return next.handle();
     }
 };

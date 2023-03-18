@@ -6,11 +6,7 @@ import { ResponseAddHeaders } from './ResponseAddHeaders';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin:[
-      "http://localhost:3000",
-      "https://mongodbweb.onrender.com",
-      "https://mongodbweb-app.vercel.app"
-    ],
+    origin: "*",
     credentials: true,
   });
   app.useGlobalInterceptors(new ResponseAddHeaders);

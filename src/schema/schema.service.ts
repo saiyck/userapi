@@ -27,7 +27,7 @@ export class SchemaService {
       await doc.save();
       res.send({
         status: 201,
-        message: "schema create successfully",
+        message: "schema create successfully!",
         result
       })
     } catch (error) {
